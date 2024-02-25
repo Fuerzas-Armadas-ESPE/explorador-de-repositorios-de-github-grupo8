@@ -12,8 +12,7 @@ const RepoList = ({ username }) => {
           `https://api.github.com/users/${username}/repos`
         );
         const sortedRepos = response.data.sort((a, b) => b.size - a.size);
-        const topRepos = sortedRepos.slice(0, 5);
-        setRepos(topRepos);
+        setRepos(sortedRepos);
       } catch (error) {
         console.error("Error fetching repos:", error);
       }
@@ -24,7 +23,7 @@ const RepoList = ({ username }) => {
 
   return (
     <div>
-      <h2>Top 5 repositorios con más participación de {username}</h2>
+      <h2>Todos los repositorios de {username}</h2>
       <ul>
         {repos.map((repo) => (
           <li key={repo.id}>
