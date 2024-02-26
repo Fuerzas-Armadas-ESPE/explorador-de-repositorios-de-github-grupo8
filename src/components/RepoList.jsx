@@ -3,8 +3,16 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import {
   Avatar,
-  CircularProgress,
-  Pagination
+  Pagination,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  LinearProgress
 } from "@mui/material";
 
 const RepoList = ({ username }) => {
@@ -37,7 +45,10 @@ const RepoList = ({ username }) => {
   }, [username]);
 
   if (!user) {
-    return <div> <CircularProgress /></div>;
+    return <div> <LinearProgress
+    color="inherit"
+    variant="indeterminate"
+  /></div>;
   }
 
   // Pagination
@@ -51,7 +62,7 @@ const RepoList = ({ username }) => {
 
   return (
     <div>
-      <h2>Todos los repositorios de {user.name}</h2>     
+      <h2 style={{ textAlign: "center" }}>Todos los repositorios de {user.name}</h2>     
       <p>Username: {user.login}</p>
       <p>Followers: {user.followers}</p>
       <p>Public Repos: {user.public_repos}</p>
@@ -59,21 +70,57 @@ const RepoList = ({ username }) => {
       <Avatar alt="User Avatar" src={user.avatar_url} />
       <br />
     
-      <ul>
-        {currentRepos.map((repo) => (
-          <li key={repo.id}>
-            {repo.name} - Tamaño: {repo.size}
-          </li>
-        ))}
-      </ul>
+      <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Nombre</TableCell>
+            <TableCell align="right">Tamaño</TableCell>
+            <TableCell align="right">Fecha Creación</TableCell>
+            <TableCell align="right">Fecha Última Actualización</TableCell>
+            <TableCell align="right">Estrellas</TableCell>
+            <TableCell align="right">Lenguaje</TableCell>
+            <TableCell align="right">Repositorio</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {currentRepos.map((repo) => (
 
-      <div>
-        <Pagination
-          count={Math.ceil(repos.length / reposPerPage)}
-          page={currentPage}
-          onChange={handlePageChange}
-        />
-      </div>
+            <TableRow
+              key={repo.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {repo.name}
+              </TableCell>
+              <TableCell align="right">{repo.size} KB</TableCell>
+              <TableCell align="right">{new Date(repo.created_at).toLocaleDateString()}</TableCell>
+              <TableCell align="right">{new Date(repo.updated_at).toLocaleDateString()}</TableCell>
+              <TableCell align="right">{repo.stargazers_count}</TableCell>
+              <TableCell align="right">{repo.language}</TableCell>
+              <TableCell align="right">
+                <Button variant="contained" color="primary" href={repo.html_url}>
+                  Ver Repositorio
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+
+        </TableBody>
+      </Table>
+    </TableContainer>
+        <br />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Pagination 
+            count={Math.ceil(repos.length / reposPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined" 
+            color="primary"
+            size="large"
+          />
+        </div>
+        <br />
     </div>
   );
 };
