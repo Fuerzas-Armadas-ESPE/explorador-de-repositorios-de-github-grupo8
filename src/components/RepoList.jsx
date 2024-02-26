@@ -63,11 +63,43 @@ const RepoList = ({ username }) => {
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Todos los repositorios de {user.name}</h2>     
-      <p>Username: {user.login}</p>
-      <p>Followers: {user.followers}</p>
-      <p>Public Repos: {user.public_repos}</p>
-      <p>URL: {user.html_url}</p>
-      <Avatar alt="User Avatar" src={user.avatar_url} />
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <table>
+            <tbody>
+              <tr>
+                <td>Usuario</td>
+                <td></td>
+                <td style={{ textAlign: "right" }}>{user.login}</td>
+              </tr>
+              <tr>
+                <td>Seguidores</td>
+                <td></td>
+                <td style={{ textAlign: "right" }}>{user.followers}</td>
+              </tr>
+              <tr>
+                <td>Repositorios</td>
+                <td></td>
+                <td style={{ textAlign: "right" }}>{user.public_repos}</td>
+              </tr>
+              <tr>
+                <td>Ir al perfil</td>
+                <td></td>
+                <td style={{ textAlign: "right" }}>
+                  <Button variant="text" href={user.html_url}>
+                    Perfil GitHub
+                  </Button>
+                </td>
+              </tr>
+              <tr>
+                <td>Foto del usuario</td>
+                <td></td>
+                <td>
+                  <Avatar alt="User Avatar" src={user.avatar_url} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       <br />
     
       <TableContainer component={Paper}>
@@ -99,7 +131,7 @@ const RepoList = ({ username }) => {
               <TableCell align="right">{repo.stargazers_count}</TableCell>
               <TableCell align="right">{repo.language}</TableCell>
               <TableCell align="right">
-                <Button variant="contained" color="primary" href={repo.html_url}>
+                <Button variant="text" href={repo.html_url}>
                   Ver Repositorio
                 </Button>
               </TableCell>
