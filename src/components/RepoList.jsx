@@ -17,7 +17,7 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 
 const RepoList = ({ username }) => {
@@ -76,7 +76,7 @@ const RepoList = ({ username }) => {
     setFilterType(event.target.value);
   };
 
-  const filteredRepos = currentRepos.filter((repo) => {
+  const filteredRepos = repos.filter((repo) => {
     if (filterType === "name") {
       return repo.name.toLowerCase().includes(filter.toLowerCase());
     } else if (filterType === "size") {
@@ -86,38 +86,16 @@ const RepoList = ({ username }) => {
     } else if (filterType === "stargazers_count") {
       return repo.stargazers_count.toString().includes(filter);
     } else if (filterType === "language") {
-      return repo.language.toLowerCase().includes(filter.toLowerCase());
+      return repo.language && repo.language.toLowerCase().includes(filter.toLowerCase());
     }
     return false;
   });
 
+  const displayedRepos = filteredRepos.slice(indexOfFirstRepo, indexOfLastRepo);
+
   return (
     <div>
       <h2 style={{ textAlign: "center" }}>Todos los repositorios de {user.name}</h2>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <FormControl variant="outlined" style={{ marginRight: "10px" }}>
-          <InputLabel id="filter-type-label">Tipo de Filtro</InputLabel>
-          <Select
-            labelId="filter-type-label"
-            id="filter-type"
-            value={filterType}
-            onChange={handleFilterTypeChange}
-            label="Tipo de Filtro"
-          >
-            <MenuItem value="name">Nombre</MenuItem>
-            <MenuItem value="size">Tamaño</MenuItem>
-            <MenuItem value="created_at">Fecha Creación</MenuItem>
-            <MenuItem value="stargazers_count">Estrellas</MenuItem>
-            <MenuItem value="language">Lenguaje</MenuItem>
-          </Select>
-        </FormControl>
-        <TextField
-          label="Filtrar"
-          variant="outlined"
-          value={filter}
-          onChange={handleFilterChange}
-        />
-      </div>
       <br />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <table>
@@ -157,7 +135,33 @@ const RepoList = ({ username }) => {
         </table>
       </div>
       <br />
-
+      <hr />
+      <br />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <FormControl variant="outlined" style={{ marginRight: "10px" }}>
+          <InputLabel id="filter-type-label">Tipo de Filtro</InputLabel>
+          <Select
+            labelId="filter-type-label"
+            id="filter-type"
+            value={filterType}
+            onChange={handleFilterTypeChange}
+            label="Tipo de Filtro"
+          >
+            <MenuItem value="name">Nombre</MenuItem>
+            <MenuItem value="size">Tamaño</MenuItem>
+            <MenuItem value="created_at">Fecha Creación</MenuItem>
+            <MenuItem value="stargazers_count">Estrellas</MenuItem>
+            <MenuItem value="language">Lenguaje</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField
+          label="Filtrar"
+          variant="outlined"
+          value={filter}
+          onChange={handleFilterChange}
+        />
+      </div>
+      <br />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -172,7 +176,7 @@ const RepoList = ({ username }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredRepos.map((repo) => (
+            {displayedRepos.map((repo) => (
               <TableRow
                 key={repo.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -202,7 +206,7 @@ const RepoList = ({ username }) => {
       <br />
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Pagination
-          count={Math.ceil(repos.length / reposPerPage)}
+          count={Math.ceil(filteredRepos.length / reposPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           variant="outlined"
